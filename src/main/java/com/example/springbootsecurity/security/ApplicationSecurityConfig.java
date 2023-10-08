@@ -43,7 +43,7 @@ public class ApplicationSecurityConfig {
     protected UserDetailsService userDetailsService(){
           UserDetails wycliffeMwimaliUser = User.builder()
                   .username("wycliffemwimali")
-                  .password("mwimali")
+                  .password(passwordEncoder.encode("mwimali"))
                   .roles("STUDENT")
                   .build();
 
