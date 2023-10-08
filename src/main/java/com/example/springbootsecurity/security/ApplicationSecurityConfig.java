@@ -12,6 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
+import static com.example.springbootsecurity.security.ApplicationUserRole.*;
+import static com.example.springbootsecurity.security.ApplicationUserRole.STUDENT;
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
@@ -44,13 +46,13 @@ public class ApplicationSecurityConfig {
           UserDetails wycliffeMwimaliUser = User.builder()
                   .username("wycliffemwimali")
                   .password(passwordEncoder.encode("mwimali"))
-                  .roles("STUDENT")
+                  .roles(STUDENT.name())
                   .build();
 
           UserDetails emmanuelKiptum = User.builder()
                   .username("emmanuel")
                   .password(passwordEncoder.encode("kiptum"))
-                  .roles("ADMIN")
+                  .roles(ADMIN.name())
                   .build();
 
           return new InMemoryUserDetailsManager(
