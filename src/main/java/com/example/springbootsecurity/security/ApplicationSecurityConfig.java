@@ -55,9 +55,16 @@ public class ApplicationSecurityConfig {
                   .roles(ADMIN.name())
                   .build();
 
+          UserDetails amigosCode = User.builder()
+
+                  .username("amigoscode")
+                  .password(passwordEncoder.encode("amigos"))
+                  .roles(ADMINTRAINEE.name())
+                  .build();
           return new InMemoryUserDetailsManager(
                   wycliffeMwimaliUser,
-                  emmanuelKiptum
+                  emmanuelKiptum,
+                  amigosCode
           );
       }
 
