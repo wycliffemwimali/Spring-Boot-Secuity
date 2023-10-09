@@ -54,20 +54,23 @@ public class ApplicationSecurityConfig {
           UserDetails wycliffeMwimaliUser = User.builder()
                   .username("wycliffemwimali")
                   .password(passwordEncoder.encode("mwimali"))
-                  .roles(STUDENT.name())
+//                  .roles(STUDENT.name())
+                  .authorities(STUDENT.getGrantedAuthorities())
                   .build();
 
           UserDetails emmanuelKiptum = User.builder()
                   .username("emmanuel")
                   .password(passwordEncoder.encode("kiptum"))
-                  .roles(ADMIN.name())
+//                  .roles(ADMIN.name())
+                  .authorities(ADMIN.getGrantedAuthorities())
                   .build();
 
           UserDetails amigosCode = User.builder()
 
                   .username("amigoscode")
                   .password(passwordEncoder.encode("amigos"))
-                  .roles(ADMINTRAINEE.name())
+//                  .roles(ADMINTRAINEE.name())
+                  .authorities(ADMINTRAINEE.getGrantedAuthorities())
                   .build();
           return new InMemoryUserDetailsManager(
                   wycliffeMwimaliUser,
