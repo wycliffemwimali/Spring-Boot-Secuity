@@ -49,7 +49,9 @@ public class ApplicationSecurityConfig {
                           .authenticated()
                           
                   )
-                  .httpBasic(withDefaults());
+                  .formLogin()
+                  .loginPage("/login").permitAll();
+//                  .httpBasic(withDefaults());
           return http.build();
       }
 
