@@ -50,7 +50,8 @@ public class ApplicationSecurityConfig {
                           
                   )
                   .formLogin()
-                  .loginPage("/login").permitAll();
+                  .loginPage("/login").permitAll()
+                  .defaultSuccessUrl("/courses", true);
 //                  .httpBasic(withDefaults());
           return http.build();
       }
