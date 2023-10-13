@@ -3,12 +3,14 @@ package com.example.springbootsecurity.auth;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
 import static com.example.springbootsecurity.security.ApplicationUserRole.*;
 
+@Repository("fake")
 public class FakeApplicationUserDaoService implements ApplicationUserDao{
     private final PasswordEncoder passwordEncoder;
 
