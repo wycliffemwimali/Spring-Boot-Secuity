@@ -1,19 +1,19 @@
 package com.example.springbootsecurity.security;
 
 import com.example.springbootsecurity.auth.ApplicationUserService;
+import com.example.springbootsecurity.jwt.JwtUsernameAndPasswordAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import java.util.concurrent.TimeUnit;
+import javax.crypto.SecretKey;
 
 import static com.example.springbootsecurity.security.ApplicationUserRole.STUDENT;
 
@@ -23,11 +23,14 @@ import static com.example.springbootsecurity.security.ApplicationUserRole.STUDEN
 public class ApplicationSecurityConfig {
     private final PasswordEncoder passwordEncoder;
     private final ApplicationUserService applicationUserService;
+    private final SecretKey secretKey;
+    private final JwtConfig jwtConfig;
 
     @Autowired
-    public ApplicationSecurityConfig(PasswordEncoder passwordEncoder, ApplicationUserService applicationUserService) {
+    public ApplicationSecurityConfig(PasswordEncoder passwordEncoder, ApplicationUserService applicationUserService, SecretKey secretKey) {
         this.passwordEncoder = passwordEncoder;
         this.applicationUserService = applicationUserService;
+        this.secretKey = secretKey;
     }
 
     @Bean
@@ -36,6 +39,11 @@ public class ApplicationSecurityConfig {
 //                  .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
 //                  .and()
                   .csrf().disable()
+                  .sessionManagement()
+                  .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                  .and()
+                  .addFilter(new JwtUsernameAndPasswordAuthenticationFilter(http.authenticationManager(), jwtConfig, secretKey))
+                  .addFilterAfter(new JwtTokenVerifier(secretKey, jwtConfig),JwtUsernameAndPasswordAuthenticationFilter.class)
                   .authorizeHttpRequests((authz) -> authz
                           .requestMatchers("/", "index", "/css/*", "/js/*")
                           .permitAll()
@@ -47,25 +55,25 @@ public class ApplicationSecurityConfig {
                           .anyRequest()
                           .authenticated()
                           
-                  )
-                  .formLogin()
-                  .loginPage("/login").permitAll()
-                  .defaultSuccessUrl("/courses", true)
-                  .passwordParameter("password")
-                  .usernameParameter("username")
-                  .and()
-                  .rememberMe()
-                  .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(21))
-                  .key("somethingverysecured")
-                  .rememberMeParameter("remember-me")
-                  .and()
-                  .logout()
-                  .logoutUrl("/logout")
-                  .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET")) // https://docs.spring.io/spring-security/site/docs/4.2.12.RELEASE/apidocs/org/springframework/security/config/annotation/web/configurers/LogoutConfigurer.html
-                  .clearAuthentication(true)
-                  .invalidateHttpSession(true)
-                  .deleteCookies("JSESSIONID", "remember-me")
-                  .logoutSuccessUrl("/login");
+                  );
+//                  .formLogin()
+//                  .loginPage("/login").permitAll()
+//                  .defaultSuccessUrl("/courses", true)
+//                  .passwordParameter("password")
+//                  .usernameParameter("username")
+//                  .and()
+//                  .rememberMe()
+//                  .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(21))
+//                  .key("somethingverysecured")
+//                  .rememberMeParameter("remember-me")
+//                  .and()
+//                  .logout()
+//                  .logoutUrl("/logout")
+//                  .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET")) // https://docs.spring.io/spring-security/site/docs/4.2.12.RELEASE/apidocs/org/springframework/security/config/annotation/web/configurers/LogoutConfigurer.html
+//                  .clearAuthentication(true)
+//                  .invalidateHttpSession(true)
+//                  .deleteCookies("JSESSIONID", "remember-me")
+//                  .logoutSuccessUrl("/login");
 
 //                  .httpBasic(withDefaults());
           return http.build();
