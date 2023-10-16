@@ -48,7 +48,7 @@ public class ApplicationSecurityConfig {
                   .sessionManagement()
                   .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                   .and()
-                  .addFilter(new JwtUsernameAndPasswordAuthenticationFilter(http.authenticationManager(), jwtConfig, secretKey))
+                  .addFilter(new JwtUsernameAndPasswordAuthenticationFilter(authentication -> authentication, jwtConfig, secretKey))
                   .addFilterAfter(new JwtTokenVerifier(secretKey, jwtConfig),JwtUsernameAndPasswordAuthenticationFilter.class)
                   .authorizeHttpRequests((authz) -> authz
                           .requestMatchers("/", "index", "/css/*", "/js/*")
