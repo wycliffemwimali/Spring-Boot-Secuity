@@ -1,10 +1,13 @@
 package com.example.springbootsecurity.security;
 
 import com.example.springbootsecurity.auth.ApplicationUserService;
+import com.example.springbootsecurity.jwt.JwtConfig;
+import com.example.springbootsecurity.jwt.JwtTokenVerifier;
 import com.example.springbootsecurity.jwt.JwtUsernameAndPasswordAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -27,11 +30,14 @@ public class ApplicationSecurityConfig {
     private final JwtConfig jwtConfig;
 
     @Autowired
-    public ApplicationSecurityConfig(PasswordEncoder passwordEncoder, ApplicationUserService applicationUserService, SecretKey secretKey) {
+    public ApplicationSecurityConfig(PasswordEncoder passwordEncoder, ApplicationUserService applicationUserService, SecretKey secretKey, JwtConfig jwtConfig) {
         this.passwordEncoder = passwordEncoder;
         this.applicationUserService = applicationUserService;
         this.secretKey = secretKey;
+        this.jwtConfig = jwtConfig;
     }
+
+
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
@@ -54,7 +60,7 @@ public class ApplicationSecurityConfig {
 //                          .requestMatchers(HttpMethod.GET, "/management/api/**").hasAnyRole(ADMIN.name(), ADMINTRAINEE.name())
                           .anyRequest()
                           .authenticated()
-                          
+
                   );
 //                  .formLogin()
 //                  .loginPage("/login").permitAll()
